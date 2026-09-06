@@ -1,0 +1,11 @@
+resources:
+  schemas:
+    dev_schema:
+      name: ${var.schema}
+      catalog_name: ${var.catalog}
+      comment: Schema for retail_dab_project (auto-created by DAB)
+
+    gold_schema:
+      name: gold
+      catalog_name: ${var.catalog}
+      comment: Gold layer aggregated tables for retail_dab_project

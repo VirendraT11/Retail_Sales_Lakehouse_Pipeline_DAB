@@ -1,0 +1,32 @@
+# Ingestion job: generates dimension and fact data for the retail pipeline.
+
+resources:
+  jobs:
+    ingestion_job:
+      name: ingestion_job
+
+      parameters:
+        - name: catalog
+          default: ${var.catalog}
+        - name: schema
+          default: raw
+        - name: num_transactions
+          default: "8000000"
+
+      tasks:
+        - task_key: generate_dimensions
+          notebook_task:
+            notebook_path: ../src/ingestion/generate_dimensions.py
+            base_parameters:
+              catalog: "{{job.parameters.catalog}}"
+              schema: "{{job.parameters.schema}}"
+
+        - task_key: generate_facts
+          depends_on:
+            - task_key: generate_dimensions
+          notebook_task:
+            notebook_path: ../src/ingestion/generate_facts.py
+            base_parameters:
+              catalog: "{{job.parameters.catalog}}"
+              schema: "{{job.parameters.schema}}"
+              num_transactions: "{{job.parameters.num_transactions}}"
